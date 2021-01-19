@@ -1,0 +1,109 @@
+﻿@page "/fetchdata"
+@inject HttpClient Http
+@inject IHttpClientFactory ClientFactory
+
+@inject BlazorSecureWithIdentity.gRPC.Greeter.GreeterClient GreeterClient;
+@using Grpc.Core
+@using System.Net.Http
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject IAccessTokenProvider TokenProvider
+@*@attribute [Authorize]*@
+
+<section>
+    Enter your name : <input type="text" @bind="Name" /> <button @onclick="CallGRPC">Greet</button>
+    @GreeterMessage
+</section>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private WeatherForecast[] forecasts;
+    public string GreeterMessage { get; set; }
+    public string Name { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //var handler = new HttpClientHandler()
+        //{
+        //    // UseDefaultCredentials = false,
+        //    // Credentials =
+        //    //System.Net.CredentialCache.DefaultCredentials,
+        //    AllowAutoRedirect = true
+        //};
+        //Http = new HttpClient(handler);
+        //Http.BaseAddress = new Uri("https://localhost:44399");
+
+        //Addresses = await Http.GetJsonAsync<Address[]>("api/Address");
+        //forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("https://localhost:44399/WeatherForecast");
+
+        var client = ClientFactory.CreateClient("companyApi");
+        forecasts = await client.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        //forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+
+
+
+    }
+
+
+    public async Task CallGRPC()
+    {
+        var response = await GreeterClient.SayHelloAsync(new gRPC.HelloRequest { Name = Name },await GetHeaderAsync());
+        GreeterMessage = response.Message;
+    }
+
+    private async Task<Metadata> GetHeaderAsync()
+    {
+        var headers = new Metadata();
+        var accessTokenResult = await TokenProvider.RequestAccessToken();
+        var AccessToken = string.Empty;
+        if (accessTokenResult.TryGetToken(out var token))
+        {
+            AccessToken = token.Value;
+            headers.Add("Authorization", $"Bearer {AccessToken}");
+        }
+
+        return headers;
+    }
+
+    public class WeatherForecast
+    {
+        public DateTime Date { get; set; }
+
+        public int TemperatureC { get; set; }
+
+        public string Summary { get; set; }
+
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}
