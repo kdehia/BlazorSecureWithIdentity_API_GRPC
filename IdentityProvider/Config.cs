@@ -37,7 +37,7 @@ namespace IdentityProvider
             new ApiResource("GRPC", "GRPC Client")
                 {
                     Scopes = { "GRPC" },
-                    //UserClaims = { "ApplicationRole" }
+                    
 
                 }
             };
@@ -55,7 +55,7 @@ namespace IdentityProvider
                     AllowedCorsOrigins = { "https://localhost:44336" },
                     AllowedScopes = { "openid", "profile","email" ,"companyApi","ApplicationRole","GRPC" },
                     RedirectUris = { "https://localhost:44336/authentication/login-callback" },
-                    PostLogoutRedirectUris = {"https://localhost:44336/authentication/logout-callback"},//{ "https://localhost:44336/" },
+                    PostLogoutRedirectUris = {"https://localhost:44336/authentication/logout-callback"},
                     Enabled = true,
                     RequireConsent = true
                 },

@@ -35,31 +35,31 @@ namespace BlazorSecureWithIdentity.BlazorIndividual
                     return handler;
                 });
 
-            //builder.Services.AddSingleton(services =>
-            //{
-            //    // Now we can instantiate gRPC clients for this channel
-            //    var httpClient = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()));
-            //    var channel = GrpcChannel.ForAddress("https://localhost:5011", new GrpcChannelOptions { HttpClient = httpClient });
-            //    return new Greeter.GreeterClient(channel);
-            //});
-            builder.Services.AddScoped(services =>
+            builder.Services.AddSingleton(services =>
             {
-                var baseAddressMessageHandler =
-                            services.GetRequiredService<BaseAddressAuthorizationMessageHandler>();
-                baseAddressMessageHandler.InnerHandler = new HttpClientHandler();
-                var grpcWebHandler =
-                            new GrpcWebHandler(GrpcWebMode.GrpcWeb, baseAddressMessageHandler);
-
-
-                //var httpClient = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()));
-                var channel = GrpcChannel.ForAddress("https://localhost:5011", new GrpcChannelOptions { HttpHandler = grpcWebHandler });
+                // Now we can instantiate gRPC clients for this channel
+                var httpClient = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()));
+                var channel = GrpcChannel.ForAddress("https://localhost:5011", new GrpcChannelOptions { HttpClient = httpClient });
                 return new Greeter.GreeterClient(channel);
             });
 
+            //builder.Services.AddScoped(services =>
+            //{
+            //    var baseAddressMessageHandler =
+            //                services.GetRequiredService<BaseAddressAuthorizationMessageHandler>();
+            //    baseAddressMessageHandler.InnerHandler = new HttpClientHandler();
+            //    var grpcWebHandler =
+            //                new GrpcWebHandler(GrpcWebMode.GrpcWeb, baseAddressMessageHandler);
 
 
-            //builder.Services.AddScoped(sp => sp.GetService<IHttpClientFactory>().CreateClient("companyApi"));
+            //    //var httpClient = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()));
+            //    var channel = GrpcChannel.ForAddress("https://localhost:5011", new GrpcChannelOptions { HttpHandler = grpcWebHandler });
+            //    return new Greeter.GreeterClient(channel);
+            //});
 
+
+
+            
             builder.Services.AddOidcAuthentication(options =>
             {
 
@@ -67,27 +67,6 @@ namespace BlazorSecureWithIdentity.BlazorIndividual
 
             });
             await builder.Build().RunAsync();
-
-
-            //.AddAccountClaimsPrincipalFactory<ArrayClaimsPrincipalFactory<RemoteUserAccount>>();
-
-            //builder.Services.AddApiAuthorization()
-            //    .AddAccountClaimsPrincipalFactory<ArrayClaimsPrincipalFactory<RemoteUserAccount>>();
-            //builder.Services.AddHttpClient("ServerAPI",
-            //    client => client.BaseAddress = new Uri("https://localhost:44399"))
-            //.AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
-
-            //        builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
-            //            .CreateClient("ServerAPI"));
-
-            //builder.Services.AddOidcAuthentication(options =>
-            //{
-            //    // Configure your authentication provider options here.
-            //    // For more information, see https://aka.ms/blazor-standalone-auth
-            //    builder.Configuration.Bind("Local", options.ProviderOptions);
-            //});
-
-
         }
     }
 }

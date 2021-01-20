@@ -20,8 +20,8 @@ namespace BlazorSecureWithIdentity.Api.Common
         public static class Claim
         {
             
-            public static string ApplicationRole { get; } = "ApplicationRole";
-            //ApplicationRole
+            public const string ApplicationRole = "ApplicationRole";
+            
         }
 
     }

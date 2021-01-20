@@ -30,19 +30,7 @@ namespace BlazorSecureWithIdentity.Api
         {
 
             services.AddControllers();
-            //services.AddAuthentication("Bearer") //JwtBearerDefaults.AuthenticationScheme
-            //    .AddJwtBearer("Bearer", options =>
-            //    {
-            //        options.Authority = "https://localhost:5005";
-            //        options.Audience = "companyApi";
-            //        options.RequireHttpsMetadata = false;
-            //        //options.TokenValidationParameters = new TokenValidationParameters()
-            //        //{
-            //        //    ValidateAudience = false
-            //        //    //NameClaimType = "name"
-            //        //};
-
-            //    });
+       
 
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", opt =>

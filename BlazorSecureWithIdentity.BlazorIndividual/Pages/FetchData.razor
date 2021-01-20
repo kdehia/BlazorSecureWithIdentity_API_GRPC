@@ -1,13 +1,12 @@
 ﻿@page "/fetchdata"
 @inject HttpClient Http
 @inject IHttpClientFactory ClientFactory
-
 @inject BlazorSecureWithIdentity.gRPC.Greeter.GreeterClient GreeterClient;
 @using Grpc.Core
 @using System.Net.Http
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject IAccessTokenProvider TokenProvider
-@*@attribute [Authorize]*@
+@attribute [Authorize]
 
 <section>
     Enter your name : <input type="text" @bind="Name" /> <button @onclick="CallGRPC">Greet</button>
@@ -54,31 +53,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        //var handler = new HttpClientHandler()
-        //{
-        //    // UseDefaultCredentials = false,
-        //    // Credentials =
-        //    //System.Net.CredentialCache.DefaultCredentials,
-        //    AllowAutoRedirect = true
-        //};
-        //Http = new HttpClient(handler);
-        //Http.BaseAddress = new Uri("https://localhost:44399");
-
-        //Addresses = await Http.GetJsonAsync<Address[]>("api/Address");
-        //forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("https://localhost:44399/WeatherForecast");
-
+        
         var client = ClientFactory.CreateClient("companyApi");
         forecasts = await client.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
-        //forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
-
-
-
+        
     }
 
 
     public async Task CallGRPC()
     {
-        var response = await GreeterClient.SayHelloAsync(new gRPC.HelloRequest { Name = Name },await GetHeaderAsync());
+        var response = await GreeterClient.SayHelloAsync(new gRPC.HelloRequest { Name = Name }, await GetHeaderAsync());
         GreeterMessage = response.Message;
     }
 
@@ -90,7 +74,6 @@ else
         if (accessTokenResult.TryGetToken(out var token))
         {
             AccessToken = token.Value;
-            headers.Add("Access-Control-Allow-Origin", "*");
             headers.Add("Authorization", $"Bearer {AccessToken}");
         }
 
