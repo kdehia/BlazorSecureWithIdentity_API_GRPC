@@ -90,6 +90,7 @@ else
         if (accessTokenResult.TryGetToken(out var token))
         {
             AccessToken = token.Value;
+            headers.Add("Access-Control-Allow-Origin", "*");
             headers.Add("Authorization", $"Bearer {AccessToken}");
         }
 

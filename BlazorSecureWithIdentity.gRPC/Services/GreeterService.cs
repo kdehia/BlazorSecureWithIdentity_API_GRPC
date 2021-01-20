@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace BlazorSecureWithIdentity.gRPC
 {
-    
+    [EnableCors("AllowAll")]
+    [Authorize]
     public class GreeterService : Greeter.GreeterBase
     {
         private readonly ILogger<GreeterService> _logger;
@@ -17,8 +18,8 @@ namespace BlazorSecureWithIdentity.gRPC
         {
             _logger = logger;
         }
-[Authorize]
-[EnableCors("AllowAll")]
+
+
         public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
         {
             var user =  context.GetHttpContext().User;

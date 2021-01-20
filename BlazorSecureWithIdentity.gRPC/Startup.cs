@@ -42,12 +42,13 @@ namespace BlazorSecureWithIdentity.gRPC
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseRouting();
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
-            app.UseCors();
+            
 
             app.UseEndpoints(endpoints =>
             {
